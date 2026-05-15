@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/movie_recommendation.dart';
 import '../services/firestore_service.dart';
 import '../services/gemini_service.dart';
+import '../services/poster_service.dart';
 import '../widgets/movie_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,8 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   final _promptController = TextEditingController();
   final _gemini = GeminiService();
   final _firestore = FirestoreService();
+  final _posters = PosterService();
 
   bool _isLoading = false;
+  bool _loadingPosters = false;
   String? _error;
   RecommendationResult? _result;
   String? _firebaseNote;
@@ -32,10 +35,21 @@ class _HomeScreenState extends State<HomeScreen> {
       _error = null;
       _result = null;
       _firebaseNote = null;
+      _loadingPosters = false;
     });
 
     try {
-      final result = await _gemini.recommendMovies(text);
+      var result = await _gemini.recommendMovies(text);
+
+      if (mounted) {
+        setState(() {
+          _result = result;
+          _isLoading = false;
+          _loadingPosters = true;
+        });
+      }
+
+      result = await _posters.enrichWithPosters(result);
 
       try {
         await _firestore.saveRecommendation(
@@ -50,7 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       if (mounted) {
-        setState(() => _result = result);
+        setState(() {
+          _result = result;
+          _loadingPosters = false;
+        });
       }
     } on GeminiException catch (e) {
       if (mounted) setState(() => _error = e.message);
@@ -59,7 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => _error = 'Chyba: $e');
       }
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _loadingPosters = false;
+        });
+      }
     }
   }
 
@@ -167,6 +189,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontSize: 12,
                   ),
                   textAlign: TextAlign.center,
+                ),
+              ),
+            if (_loadingPosters)
+              const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text(
+                  'Načítavam plagáty filmov…',
+                  style: TextStyle(color: Colors.white54, fontSize: 13),
                 ),
               ),
             if (_result != null) ...[

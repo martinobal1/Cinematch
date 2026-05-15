@@ -9,15 +9,34 @@ class MovieRecommendation {
     required this.moodColors,
     this.trailerQuery,
     this.personalReview,
+    this.posterUrl,
+    this.englishTitle,
   });
 
   final String title;
   final int year;
+  /// Anglický názov pre vyhľadanie plagátu (TMDB / Wikidata).
+  final String? englishTitle;
   final String reason;
   final List<String> moodTags;
   final List<int> moodColors;
   final String? trailerQuery;
   final String? personalReview;
+  final String? posterUrl;
+
+  MovieRecommendation copyWith({String? posterUrl}) {
+    return MovieRecommendation(
+      title: title,
+      year: year,
+      reason: reason,
+      moodTags: moodTags,
+      moodColors: moodColors,
+      trailerQuery: trailerQuery,
+      personalReview: personalReview,
+      posterUrl: posterUrl ?? this.posterUrl,
+      englishTitle: englishTitle,
+    );
+  }
 
   factory MovieRecommendation.fromJson(Map<String, dynamic> json) {
     return MovieRecommendation(
@@ -33,6 +52,7 @@ class MovieRecommendation {
       moodColors: _parseColors(json['moodColors']),
       trailerQuery: json['trailerQuery'] as String?,
       personalReview: json['personalReview'] as String?,
+      englishTitle: json['englishTitle'] as String?,
     );
   }
 
