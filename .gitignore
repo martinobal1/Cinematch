@@ -39,6 +39,12 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Lokálne tajomstvá (API kľúče)
+.env
+.env.*
+secrets.json
+lib/config/api_secrets.dart
+
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile

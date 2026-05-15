@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Vývoj: povolené čítanie/zápis pre kolekciu odporúčaní.
+    // Pred produkciou pridaj Firebase Auth a obmedz zápis na prihlásených.
+    match /recommendations/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,46 +1,42 @@
-import 'package:flutter/material.dart';
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'firebase_options.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // get remote config
-  final remoteConfig = FirebaseRemoteConfig.instance;
-
-  // set expiration
-  await remoteConfig.setConfigSettings(RemoteConfigSettings(fetchTimeout: const Duration(minutes: 1), minimumFetchInterval: const Duration(seconds: 10)));
-
-  // setup default values
-  remoteConfig.setDefaults(<String, dynamic>{'message': 'just default message'});
-
-  // get last config data
-  final message = remoteConfig.getString('message');
-
-  runApp(MyApp(message));
-  // fetch and activate config data, data will be used in next restart
-  bool updated = await remoteConfig.fetchAndActivate();
-  if (updated) {
-    print("the config has been updated, new parameter values are available");
-  } else {
-    print("the config values were previously updated.");
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase init: $e');
   }
-
-  final newMessage = remoteConfig.getString('message');
-  print("message is: $newMessage");
+  runApp(const CineMatchApp());
 }
 
-class MyApp extends StatelessWidget {
-  final _title = 'Firebase Test App';
-  final String text;
-  const MyApp(this.text, {super.key});
+class CineMatchApp extends StatelessWidget {
+  const CineMatchApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: _title, theme: ThemeData(primaryColor: Colors.red), home: Scaffold(appBar: AppBar(title: Text(_title)), body: Center(child: Text(text))));
+    return MaterialApp(
+      title: 'CineMatch AI',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFE50914),
+          brightness: Brightness.dark,
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          ThemeData.dark().textTheme,
+        ),
+      ),
+      home: const HomeScreen(),
+    );
   }
 }
