@@ -9,6 +9,7 @@ class MovieRecommendation {
     required this.moodColors,
     this.trailerQuery,
     this.personalReview,
+    this.posterUrl,
   });
 
   final String title;
@@ -18,6 +19,20 @@ class MovieRecommendation {
   final List<int> moodColors;
   final String? trailerQuery;
   final String? personalReview;
+  final String? posterUrl;
+
+  MovieRecommendation copyWith({String? posterUrl}) {
+    return MovieRecommendation(
+      title: title,
+      year: year,
+      reason: reason,
+      moodTags: moodTags,
+      moodColors: moodColors,
+      trailerQuery: trailerQuery,
+      personalReview: personalReview,
+      posterUrl: posterUrl ?? this.posterUrl,
+    );
+  }
 
   factory MovieRecommendation.fromJson(Map<String, dynamic> json) {
     return MovieRecommendation(

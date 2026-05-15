@@ -16,4 +16,12 @@ class AppConfig {
       geminiApiKey.isNotEmpty ? geminiApiKey : localGeminiApiKey;
 
   static bool get hasGeminiKey => effectiveGeminiKey.isNotEmpty;
+
+  static const tmdbApiKey = String.fromEnvironment(
+    'TMDB_API_KEY',
+    defaultValue: '',
+  );
+
+  static String get effectiveTmdbKey =>
+      tmdbApiKey.isNotEmpty ? tmdbApiKey : localTmdbApiKey;
 }
