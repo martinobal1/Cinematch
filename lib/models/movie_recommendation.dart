@@ -10,10 +10,13 @@ class MovieRecommendation {
     this.trailerQuery,
     this.personalReview,
     this.posterUrl,
+    this.englishTitle,
   });
 
   final String title;
   final int year;
+  /// Anglický názov pre vyhľadanie plagátu (TMDB / Wikidata).
+  final String? englishTitle;
   final String reason;
   final List<String> moodTags;
   final List<int> moodColors;
@@ -31,6 +34,7 @@ class MovieRecommendation {
       trailerQuery: trailerQuery,
       personalReview: personalReview,
       posterUrl: posterUrl ?? this.posterUrl,
+      englishTitle: englishTitle,
     );
   }
 
@@ -48,6 +52,7 @@ class MovieRecommendation {
       moodColors: _parseColors(json['moodColors']),
       trailerQuery: json['trailerQuery'] as String?,
       personalReview: json['personalReview'] as String?,
+      englishTitle: json['englishTitle'] as String?,
     );
   }
 

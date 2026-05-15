@@ -79,7 +79,8 @@ Odpovedz VÝHRADNE platným JSON (bez markdown) v tomto tvare:
   "summary": "jedna veta o celkovej nálade odporúčaní",
   "movies": [
     {
-      "title": "názov filmu",
+      "title": "slovenský názov filmu pre používateľa",
+      "englishTitle": "The Movie Title in English",
       "year": 2010,
       "reason": "2-3 vety prečo sedí k popisu",
       "moodTags": ["tag1", "tag2", "tag3"],
@@ -91,9 +92,10 @@ Odpovedz VÝHRADNE platným JSON (bez markdown) v tomto tvare:
 }
 
 Pravidlá:
-- Presne 3 až 5 filmov v poli movies
+- Presne 3 až 5 filmov v poli movies (ak používateľ chce top 10, daj 5 najlepších)
+- englishTitle: vždy oficiálny anglický názov filmu (pre plagáty)
 - moodColors: 3 hex farby bez # (náladová paleta)
-- Odpovedaj v slovenčine
+- Odpovedaj v slovenčine (title, reason, tagy); englishTitle vždy po anglicky
 ''';
 
     final response = await model.generateContent([Content.text(prompt)]);

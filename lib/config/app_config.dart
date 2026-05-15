@@ -22,6 +22,19 @@ class AppConfig {
     defaultValue: '',
   );
 
+  static const tmdbReadAccessToken = String.fromEnvironment(
+    'TMDB_READ_ACCESS_TOKEN',
+    defaultValue: '',
+  );
+
   static String get effectiveTmdbKey =>
       tmdbApiKey.isNotEmpty ? tmdbApiKey : localTmdbApiKey;
+
+  static String get effectiveTmdbToken =>
+      tmdbReadAccessToken.isNotEmpty
+          ? tmdbReadAccessToken
+          : localTmdbReadAccessToken;
+
+  static bool get hasTmdb =>
+      effectiveTmdbKey.isNotEmpty || effectiveTmdbToken.isNotEmpty;
 }

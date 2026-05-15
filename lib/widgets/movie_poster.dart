@@ -15,6 +15,10 @@ class MoviePoster extends StatelessWidget {
   final BorderRadius borderRadius;
   final double fallbackIconSize;
 
+  static const _imageHeaders = {
+    'User-Agent': 'CineMatchAI/1.0 (Flutter school project)',
+  };
+
   @override
   Widget build(BuildContext context) {
     final hasUrl = posterUrl != null && posterUrl!.isNotEmpty;
@@ -24,11 +28,20 @@ class MoviePoster extends StatelessWidget {
       child: hasUrl
           ? CachedNetworkImage(
               imageUrl: posterUrl!,
+              httpHeaders: _imageHeaders,
               height: height,
               width: double.infinity,
               fit: BoxFit.cover,
+              fadeInDuration: const Duration(milliseconds: 300),
               placeholder: (_, __) => _placeholder(showSpinner: true),
-              errorWidget: (_, __, ___) => _placeholder(),
+              errorWidget: (_, __, ___) => Image.network(
+                posterUrl!,
+                headers: _imageHeaders,
+                height: height,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => _placeholder(),
+              ),
             )
           : _placeholder(),
     );
