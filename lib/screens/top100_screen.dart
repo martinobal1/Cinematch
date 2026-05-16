@@ -5,6 +5,7 @@ import '../models/ranked_movie.dart';
 import '../services/top100_service.dart';
 import '../widgets/movie_detail_sheet.dart';
 import '../widgets/movie_poster.dart';
+import '../widgets/responsive_page_column.dart';
 import '../widgets/top100_average_panel.dart';
 
 class Top100Screen extends StatefulWidget {
@@ -99,7 +100,9 @@ class _Top100ScreenState extends State<Top100Screen> {
           ),
         ],
       ),
-      body: SafeArea(child: _buildBody()),
+      body: SafeArea(
+        child: ResponsivePageColumn(child: _buildBody()),
+      ),
     );
   }
 
