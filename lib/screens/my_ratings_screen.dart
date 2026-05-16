@@ -5,6 +5,7 @@ import '../models/user_movie_rating.dart';
 import '../services/user_rating_service.dart';
 import '../widgets/external_ratings_bar.dart';
 import '../widgets/movie_poster.dart';
+import '../widgets/responsive_page_column.dart';
 import '../widgets/star_rating_input.dart';
 
 class MyRatingsScreen extends StatelessWidget {
@@ -28,7 +29,8 @@ class MyRatingsScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: StreamBuilder<List<UserMovieRating>>(
+        child: ResponsivePageColumn(
+          child: StreamBuilder<List<UserMovieRating>>(
             stream: service.watchMyRatings(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -106,6 +108,7 @@ class MyRatingsScreen extends StatelessWidget {
               );
             },
           ),
+        ),
       ),
     );
   }

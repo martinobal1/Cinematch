@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../config/avatar_presets.dart';
 import '../services/user_profile_service.dart';
+import '../widgets/responsive_page_column.dart';
 import '../widgets/user_avatar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -121,13 +122,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       body: SafeArea(
-        child: StreamBuilder<UserProfile>(
-          stream: _profile.watchProfile(),
-          builder: (context, snapshot) {
-            final profile = snapshot.data;
-            final avatarId = profile?.avatarId ?? _selectedAvatar;
+        child: ResponsivePageColumn(
+          child: StreamBuilder<UserProfile>(
+            stream: _profile.watchProfile(),
+            builder: (context, snapshot) {
+              final profile = snapshot.data;
+              final avatarId = profile?.avatarId ?? _selectedAvatar;
 
-            return ListView(
+              return ListView(
               padding: const EdgeInsets.all(20),
               children: [
                 Center(
@@ -277,8 +279,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
