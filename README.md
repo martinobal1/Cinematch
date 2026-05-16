@@ -149,11 +149,11 @@ Po vytvorení screenshotov ich ulož do `docs/screenshots/` podľa `docs/screens
 
 | Súbor | Obrazovka |
 |-------|-----------|
-| ![Prihlásenie](docs/screenshots/01-login.png) | *(doplň súbor)* |
-| ![Domov](docs/screenshots/02-home.png) | *(doplň súbor)* |
-| ![Moje hodnotenia](docs/screenshots/04-my-ratings.png) | *(doplň súbor)* |
-| ![TOP 100](docs/screenshots/05-top100.png) | *(doplň súbor)* |
-| ![Profil](docs/screenshots/06-profile.png) | *(doplň súbor)* |
+| ![Prihlásenie](docs/screenshots/01-login.png) | 
+| ![Domov](docs/screenshots/02-home.png) | 
+| ![Moje hodnotenia](docs/screenshots/04-my-ratings.png) | 
+| ![TOP 100](docs/screenshots/05-top100.png) |
+| ![Profil](docs/screenshots/06-profile.png) | 
 
 ---
 
