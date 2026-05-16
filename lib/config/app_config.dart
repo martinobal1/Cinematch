@@ -37,4 +37,14 @@ class AppConfig {
 
   static bool get hasTmdb =>
       effectiveTmdbKey.isNotEmpty || effectiveTmdbToken.isNotEmpty;
+
+  static const omdbApiKey = String.fromEnvironment(
+    'OMDB_API_KEY',
+    defaultValue: '',
+  );
+
+  static String get effectiveOmdbKey =>
+      omdbApiKey.isNotEmpty ? omdbApiKey : localOmdbApiKey;
+
+  static bool get hasOmdb => effectiveOmdbKey.isNotEmpty;
 }

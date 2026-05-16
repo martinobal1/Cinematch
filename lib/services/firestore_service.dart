@@ -23,6 +23,8 @@ class FirestoreService {
               'reason': m.reason,
               'moodTags': m.moodTags,
               'moodColors': m.moodColors,
+              if (m.imdbRating != null) 'imdbRating': m.imdbRating,
+              if (m.csfdRating != null) 'csfdRating': m.csfdRating,
             },
           )
           .toList(),
