@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../config/intro_copy.dart';
+import '../services/auth_service.dart';
 import '../models/movie_recommendation.dart';
 import '../services/firestore_service.dart';
 import '../services/gemini_service.dart';
@@ -23,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _firestore = FirestoreService();
   final _posters = PosterService();
   final _ratings = RatingService();
+  AuthService? _auth;
+  AuthService get auth => _auth ??= AuthService();
 
   String _introTagline = '';
   String _hintExample = '';
@@ -135,6 +139,43 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: false,
         backgroundColor: Colors.black,
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.account_circle_outlined),
+            color: const Color(0xFF1a1a1a),
+            onSelected: (value) async {
+              if (value == 'logout') await auth.signOut();
+            },
+            itemBuilder: (context) {
+              final email = FirebaseAuth.instance.currentUser?.email;
+              return [
+                if (email != null)
+                  PopupMenuItem(
+                    enabled: false,
+                    child: Text(
+                      email,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                const PopupMenuItem(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, size: 20, color: Colors.white70),
+                      SizedBox(width: 10),
+                      Text('Odhlásiť sa'),
+                    ],
+                  ),
+                ),
+              ];
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SafeArea(
         child: ResponsivePageColumn(
