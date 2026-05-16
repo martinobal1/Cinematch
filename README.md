@@ -152,7 +152,7 @@ Náhľady hlavných obrazoviek aplikácie (tmavý režim, Material 3).
 #### Prihlásenie
 
 <p align="center">
-  <img src="docs/screenshots/01-login.PNG" width="320" alt="Obrazovka prihlásenia" />
+  <img src="docs/screenshots/01-login.png" width="320" alt="Obrazovka prihlásenia" />
 </p>
 
 <p align="center"><strong>Prihlásenie</strong> — vstup e-mailom a heslom cez <strong>Firebase Authentication</strong>. Odkaz na registráciu nového účtu.</p>
