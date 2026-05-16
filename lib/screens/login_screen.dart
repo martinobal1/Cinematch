@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
 import '../widgets/auth_screen_layout.dart';
+import '../widgets/submit_on_enter_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _passwordFocus = FocusNode();
   AuthService? _auth;
   AuthService get auth => _auth ??= AuthService();
 
@@ -67,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -80,11 +83,13 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextFormField(
+            SubmitOnEnterFormField(
               controller: _emailController,
+              enabled: !_isLoading,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
-              autocorrect: false,
+              onSubmit: _submit,
+              onNext: () => _passwordFocus.requestFocus(),
               decoration: authInputDecoration(
                 label: 'E-mail',
                 icon: Icons.email_outlined,
@@ -97,30 +102,34 @@ class _LoginScreenState extends State<LoginScreen> {
               },
             ),
             const SizedBox(height: 14),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: _obscurePassword,
-              textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _submit(),
-              decoration: authInputDecoration(
-                label: 'Heslo',
-                icon: Icons.lock_outline,
-              ).copyWith(
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    color: Colors.white54,
+            Focus(
+              focusNode: _passwordFocus,
+              child: SubmitOnEnterFormField(
+                controller: _passwordController,
+                enabled: !_isLoading,
+                obscureText: _obscurePassword,
+                textInputAction: TextInputAction.done,
+                onSubmit: _submit,
+                decoration: authInputDecoration(
+                  label: 'Heslo',
+                  icon: Icons.lock_outline,
+                ).copyWith(
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.white54,
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
-                  onPressed: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
                 ),
+                validator: (v) {
+                  if ((v ?? '').isEmpty) return 'Zadaj heslo';
+                  return null;
+                },
               ),
-              validator: (v) {
-                if ((v ?? '').isEmpty) return 'Zadaj heslo';
-                return null;
-              },
             ),
             Align(
               alignment: Alignment.centerRight,

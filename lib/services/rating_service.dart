@@ -15,6 +15,13 @@ class RatingService {
     'Accept-Language': 'sk-SK,sk;q=0.9,en;q=0.8',
   };
 
+  /// Verejné doplnenie IMDb + ČSFD pre jeden film.
+  Future<MovieRecommendation> enrichMovieRatings(
+    MovieRecommendation movie, {
+    int? tmdbId,
+  }) =>
+      _enrichMovie(movie, tmdbId: tmdbId);
+
   Future<RecommendationResult> enrichWithRatings(
     RecommendationResult result,
   ) async {
@@ -24,21 +31,93 @@ class RatingService {
     return RecommendationResult(summary: result.summary, movies: movies);
   }
 
-  Future<MovieRecommendation> _enrichMovie(MovieRecommendation movie) async {
+  Future<MovieRecommendation> _enrichMovie(
+    MovieRecommendation movie, {
+    int? tmdbId,
+  }) async {
     var imdb = movie.imdbRating;
     var csfd = movie.csfdRating;
+
+    final csfdData = await _fetchCsfd(movie);
+    if (csfdData.$1 != null) csfd = csfdData.$1;
+    if (csfdData.$2 != null) imdb = csfdData.$2;
 
     final omdbImdb = await _fetchOmdbImdb(movie);
     if (omdbImdb != null) imdb = omdbImdb;
 
-    final csfdData = await _fetchCsfd(movie);
-    if (csfdData.$1 != null) csfd = csfdData.$1;
-    if (csfdData.$2 != null && imdb == null) imdb = csfdData.$2;
+    if (imdb == null && tmdbId != null) {
+      imdb = await _fetchImdbViaTmdb(tmdbId);
+    }
 
     if (imdb == movie.imdbRating && csfd == movie.csfdRating) {
       return movie;
     }
     return movie.copyWith(imdbRating: imdb, csfdRating: csfd);
+  }
+
+  Future<double?> _fetchImdbViaTmdb(int tmdbId) async {
+    final imdbId = await _fetchTmdbImdbId(tmdbId);
+    if (imdbId == null) return null;
+    return _fetchOmdbByImdbId(imdbId);
+  }
+
+  Future<String?> _fetchTmdbImdbId(int tmdbId) async {
+    if (!AppConfig.hasTmdb) return null;
+
+    final params = <String, String>{};
+    final key = AppConfig.effectiveTmdbKey;
+    if (key.isNotEmpty && AppConfig.effectiveTmdbToken.isEmpty) {
+      params['api_key'] = key;
+    }
+
+    final uri = Uri.https(
+      'api.themoviedb.org',
+      '/3/movie/$tmdbId/external_ids',
+      params,
+    );
+
+    final headers = AppConfig.effectiveTmdbToken.isNotEmpty
+        ? {
+            ..._headers,
+            'Authorization': 'Bearer ${AppConfig.effectiveTmdbToken}',
+          }
+        : _headers;
+
+    try {
+      final response = await http
+          .get(uri, headers: headers)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode != 200) return null;
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final id = data['imdb_id'] as String?;
+      if (id == null || id.isEmpty || id == 'null') return null;
+      return id;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<double?> _fetchOmdbByImdbId(String imdbId) async {
+    if (!AppConfig.hasOmdb) return null;
+
+    final uri = Uri.https('www.omdbapi.com', '/', {
+      'apikey': AppConfig.effectiveOmdbKey,
+      'i': imdbId,
+      'type': 'movie',
+      'r': 'json',
+    });
+
+    try {
+      final response = await http
+          .get(uri, headers: _headers)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode != 200) return null;
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      if (data['Response'] != 'True') return null;
+      return _parseImdbValue(data['imdbRating']);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<double?> _fetchOmdbImdb(MovieRecommendation movie) async {
