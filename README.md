@@ -145,15 +145,57 @@ Na širokých obrazovkách (≥ 900 px) má obsah hlavných obrazoviek **70 % š
 
 ### Snímky obrazovky
 
-Po vytvorení screenshotov ich ulož do `docs/screenshots/` podľa `docs/screenshots/README.md` a sem doplň odkazy, napr.:
+Náhľady hlavných obrazoviek aplikácie (tmavý režim, Material 3).
 
-| Súbor | Obrazovka |
-|-------|-----------|
-| ![Prihlásenie](docs/screenshots/01-login.png) | 
-| ![Domov](docs/screenshots/02-home.png) | 
-| ![Moje hodnotenia](docs/screenshots/04-my-ratings.png) | 
-| ![TOP 100](docs/screenshots/05-top100.png) |
-| ![Profil](docs/screenshots/06-profile.png) | 
+<br>
+
+#### Prihlásenie
+
+<p align="center">
+  <img src="docs/screenshots/01-login.PNG" width="320" alt="Obrazovka prihlásenia" />
+</p>
+
+<p align="center"><strong>Prihlásenie</strong> — vstup e-mailom a heslom cez <strong>Firebase Authentication</strong>. Odkaz na registráciu nového účtu.</p>
+
+<br>
+
+#### Domov — AI odporúčania
+
+<p align="center">
+  <img src="docs/screenshots/02-home.png" width="320" alt="Domovská obrazovka s odporúčaniami" />
+</p>
+
+<p align="center"><strong>Domov</strong> — používateľ napíše náladu alebo situáciu; <strong>Gemini</strong> vráti filmy s plagátom, tagmi a hodnoteniami IMDb/ČSFD. Výsledok sa uloží do Firestore.</p>
+
+<br>
+
+#### Moje hodnotenia
+
+<p align="center">
+  <img src="docs/screenshots/04-my-ratings.png" width="320" alt="Zoznam vlastných hodnotení" />
+</p>
+
+<p align="center"><strong>Moje hodnotenia</strong> — prehľad filmov, ktoré používateľ ohodnotil 1–5 hviezdičkami (ukladané v Firestore pod jeho účtom).</p>
+
+<br>
+
+#### TOP 100
+
+<p align="center">
+  <img src="docs/screenshots/05-top100.png" width="320" alt="Rebríček TOP 100 filmov" />
+</p>
+
+<p align="center"><strong>TOP 100</strong> — globálny rebríček z TMDB doplnený o priemery <strong>IMDb</strong> a <strong>ČSFD</strong>; kliknutím otvoríš detail filmu.</p>
+
+<br>
+
+#### Profil
+
+<p align="center">
+  <img src="docs/screenshots/06-profile.png" width="320" alt="Nastavenie profilu a hesla" />
+</p>
+
+<p align="center"><strong>Profil</strong> — výber avatara a zmena hesla prihláseného používateľa.</p>
 
 ---
 
