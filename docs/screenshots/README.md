@@ -2,7 +2,7 @@
 
 Pred odovzdaním sem vlož PNG alebo JPG z hlavných obrazoviek aplikácie, napríklad:
 
-- `01-login.png` — prihlásenie
+- `01-login.PNG` — prihlásenie
 - `02-home.png` — domovská obrazovka s AI odporúčaním
 - `03-movie-detail.png` — detail filmu (sheet)
 - `04-my-ratings.png` — moje hodnotenia
