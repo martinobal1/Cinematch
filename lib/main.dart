@@ -3,17 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'firebase_options.dart';
-import 'screens/home_screen.dart';
+import 'screens/auth_gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {
-    debugPrint('Firebase init: $e');
-  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const CineMatchApp());
 }
 
@@ -36,7 +32,7 @@ class CineMatchApp extends StatelessWidget {
           ThemeData.dark().textTheme,
         ),
       ),
-      home: const HomeScreen(),
+      home: const AuthGate(),
     );
   }
 }
