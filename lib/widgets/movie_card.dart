@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../models/movie_recommendation.dart';
-import 'mood_palette_bar.dart';
+import 'external_ratings_bar.dart';
 import 'movie_detail_sheet.dart';
 import 'movie_poster.dart';
 import 'movie_ratings_row.dart';
@@ -118,9 +118,14 @@ class MovieCard extends StatelessWidget {
                     csfdRating: movie.csfdRating,
                     compact: true,
                   ),
-                  if (movie.imdbRating != null || movie.csfdRating != null)
-                    const SizedBox(height: 10),
-                  MoodPaletteBar(colors: movie.moodColors),
+                  if (movie.imdbRating != null || movie.csfdRating != null) ...[
+                    const SizedBox(height: 8),
+                    ExternalRatingsBar(
+                      imdbRating: movie.imdbRating,
+                      csfdRating: movie.csfdRating,
+                      height: 10,
+                    ),
+                  ],
                   const SizedBox(height: 10),
                   Wrap(
                     spacing: 8,

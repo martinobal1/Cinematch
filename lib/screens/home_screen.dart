@@ -9,8 +9,14 @@ import '../services/firestore_service.dart';
 import '../services/gemini_service.dart';
 import '../services/poster_service.dart';
 import '../services/rating_service.dart';
+import '../screens/my_ratings_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/top100_screen.dart';
+import '../services/user_profile_service.dart';
+import '../widgets/user_avatar.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/responsive_page_column.dart';
+import '../widgets/submit_on_enter_field.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _ratings = RatingService();
   AuthService? _auth;
   AuthService get auth => _auth ??= AuthService();
+  final _profileService = UserProfileService();
 
   String _introTagline = '';
   String _hintExample = '';
@@ -140,38 +147,91 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
         backgroundColor: Colors.black,
         actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.account_circle_outlined),
-            color: const Color(0xFF1a1a1a),
-            onSelected: (value) async {
-              if (value == 'logout') await auth.signOut();
-            },
-            itemBuilder: (context) {
-              final email = FirebaseAuth.instance.currentUser?.email;
-              return [
-                if (email != null)
-                  PopupMenuItem(
-                    enabled: false,
-                    child: Text(
-                      email,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                const PopupMenuItem(
-                  value: 'logout',
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, size: 20, color: Colors.white70),
-                      SizedBox(width: 10),
-                      Text('Odhlásiť sa'),
-                    ],
-                  ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const Top100Screen(),
                 ),
-              ];
+              );
+            },
+            child: Text(
+              'TOP 100',
+              style: GoogleFonts.bebasNeue(
+                fontSize: 20,
+                color: const Color(0xFFE50914),
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+          IconButton(
+            tooltip: 'Moje hodnotenia',
+            icon: const Icon(Icons.star_rounded, color: Color(0xFFF5C518)),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const MyRatingsScreen(),
+                ),
+              );
+            },
+          ),
+          StreamBuilder<UserProfile>(
+            stream: _profileService.watchProfile(),
+            builder: (context, profileSnap) {
+              final avatarId = profileSnap.data?.avatarId ?? 'user';
+              return PopupMenuButton<String>(
+                icon: UserAvatar(avatarId: avatarId, radius: 18),
+                color: const Color(0xFF1a1a1a),
+                onSelected: (value) async {
+                  if (value == 'profile') {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ProfileScreen(),
+                      ),
+                    );
+                  } else if (value == 'logout') {
+                    await auth.signOut();
+                  }
+                },
+                itemBuilder: (context) {
+                  final email = FirebaseAuth.instance.currentUser?.email;
+                  return [
+                    if (email != null)
+                      PopupMenuItem(
+                        enabled: false,
+                        child: Text(
+                          email,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    const PopupMenuItem(
+                      value: 'profile',
+                      child: Row(
+                        children: [
+                          Icon(Icons.person_outline,
+                              size: 20, color: Colors.white70),
+                          SizedBox(width: 10),
+                          Text('Profil a heslo'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'logout',
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout, size: 20, color: Colors.white70),
+                          SizedBox(width: 10),
+                          Text('Odhlásiť sa'),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
+              );
             },
           ),
           const SizedBox(width: 8),
@@ -191,12 +251,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
-                  TextField(
+                  SubmitOnEnterField(
                     controller: _promptController,
                     maxLines: 3,
-                    onSubmitted: (_) => _search(),
+                    enabled: !_isLoading,
+                    onSubmit: _search,
                     decoration: InputDecoration(
-                      hintText: _hintExample,
+                      hintText: '$_hintExample\n',
                       filled: true,
                       fillColor: Colors.white.withValues(alpha: 0.08),
                       border: OutlineInputBorder(

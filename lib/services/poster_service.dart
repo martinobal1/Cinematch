@@ -20,6 +20,9 @@ class PosterService {
     return _baseHeaders;
   }
 
+  Future<MovieRecommendation> enrichMoviePoster(MovieRecommendation movie) =>
+      _fetchPoster(movie);
+
   Future<RecommendationResult> enrichWithPosters(
     RecommendationResult result,
   ) async {
