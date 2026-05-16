@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../config/intro_copy.dart';
 import '../models/movie_recommendation.dart';
 import '../services/firestore_service.dart';
 import '../services/gemini_service.dart';
 import '../services/poster_service.dart';
+import '../services/rating_service.dart';
 import '../widgets/movie_card.dart';
+import '../widgets/responsive_page_column.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,9 +22,21 @@ class _HomeScreenState extends State<HomeScreen> {
   final _gemini = GeminiService();
   final _firestore = FirestoreService();
   final _posters = PosterService();
+  final _ratings = RatingService();
+
+  String _introTagline = '';
+  String _hintExample = '';
 
   bool _isLoading = false;
   bool _loadingPosters = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _introTagline = IntroCopy.randomTagline();
+    _hintExample = IntroCopy.randomHint();
+  }
+
   String? _error;
   RecommendationResult? _result;
   String? _firebaseNote;
@@ -50,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       result = await _posters.enrichWithPosters(result);
+      result = await _ratings.enrichWithRatings(result);
 
       try {
         await _firestore.saveRecommendation(
@@ -96,29 +112,42 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(
-          'CINEMATCH AI',
-          style: GoogleFonts.bebasNeue(
-            fontSize: 36,
-            letterSpacing: 2,
-            color: const Color(0xFFE50914),
-          ),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            final w = MediaQuery.sizeOf(context).width;
+            final isWide = w >= 900;
+            final titleWidth = isWide ? w * 0.7 : w;
+            return Center(
+              child: SizedBox(
+                width: titleWidth,
+                child: Text(
+                  'CINEMATCH AI',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.bebasNeue(
+                    fontSize: 36,
+                    letterSpacing: 2,
+                    color: const Color(0xFFE50914),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Colors.black,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
+        child: ResponsivePageColumn(
+          child: Column(
+            children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.zero,
               child: Column(
                 children: [
-                  const Text(
-                    'Opíš svoju náladu prirodzene — AI nájde 3–5 filmov '
-                    's náladovou paletou a dôvodmi.',
+                  Text(
+                    _introTagline,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
                   TextField(
@@ -126,9 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     maxLines: 3,
                     onSubmitted: (_) => _search(),
                     decoration: InputDecoration(
-                      hintText:
-                          'napr. Som unavený po škole, chcem mysteriózne '
-                          'nie horor, jesenná atmosféra...',
+                      hintText: _hintExample,
                       filled: true,
                       fillColor: Colors.white.withValues(alpha: 0.08),
                       border: OutlineInputBorder(
@@ -195,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const Padding(
                 padding: EdgeInsets.only(top: 8),
                 child: Text(
-                  'Načítavam plagáty filmov…',
+                  'Načítavam plagáty a hodnotenia…',
                   style: TextStyle(color: Colors.white54, fontSize: 13),
                 ),
               ),
@@ -231,6 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
           ],
+        ),
         ),
       ),
     );

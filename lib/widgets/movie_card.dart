@@ -5,6 +5,7 @@ import '../models/movie_recommendation.dart';
 import 'mood_palette_bar.dart';
 import 'movie_detail_sheet.dart';
 import 'movie_poster.dart';
+import 'movie_ratings_row.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({super.key, required this.movie});
@@ -112,6 +113,13 @@ class MovieCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  MovieRatingsRow(
+                    imdbRating: movie.imdbRating,
+                    csfdRating: movie.csfdRating,
+                    compact: true,
+                  ),
+                  if (movie.imdbRating != null || movie.csfdRating != null)
+                    const SizedBox(height: 10),
                   MoodPaletteBar(colors: movie.moodColors),
                   const SizedBox(height: 10),
                   Wrap(

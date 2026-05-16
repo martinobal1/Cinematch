@@ -11,6 +11,8 @@ class MovieRecommendation {
     this.personalReview,
     this.posterUrl,
     this.englishTitle,
+    this.imdbRating,
+    this.csfdRating,
   });
 
   final String title;
@@ -23,8 +25,16 @@ class MovieRecommendation {
   final String? trailerQuery;
   final String? personalReview;
   final String? posterUrl;
+  /// IMDb priemer (0–10).
+  final double? imdbRating;
+  /// ČSFD hodnotenie v percentách (0–100).
+  final int? csfdRating;
 
-  MovieRecommendation copyWith({String? posterUrl}) {
+  MovieRecommendation copyWith({
+    String? posterUrl,
+    double? imdbRating,
+    int? csfdRating,
+  }) {
     return MovieRecommendation(
       title: title,
       year: year,
@@ -35,6 +45,8 @@ class MovieRecommendation {
       personalReview: personalReview,
       posterUrl: posterUrl ?? this.posterUrl,
       englishTitle: englishTitle,
+      imdbRating: imdbRating ?? this.imdbRating,
+      csfdRating: csfdRating ?? this.csfdRating,
     );
   }
 
@@ -53,7 +65,23 @@ class MovieRecommendation {
       trailerQuery: json['trailerQuery'] as String?,
       personalReview: json['personalReview'] as String?,
       englishTitle: json['englishTitle'] as String?,
+      imdbRating: _parseDouble(json['imdbRating']),
+      csfdRating: _parseInt(json['csfdRating']),
     );
+  }
+
+  static double? _parseDouble(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is num) return raw.toDouble();
+    return double.tryParse(raw.toString().replaceAll(',', '.'));
+  }
+
+  static int? _parseInt(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is int) return raw;
+    if (raw is num) return raw.round();
+    final text = raw.toString().replaceAll('%', '').trim();
+    return int.tryParse(text);
   }
 
   static List<int> _parseColors(dynamic raw) {

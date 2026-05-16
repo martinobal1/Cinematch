@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/movie_recommendation.dart';
 import 'mood_palette_bar.dart';
 import 'movie_poster.dart';
+import 'movie_ratings_row.dart';
 
 void showMovieDetailSheet(BuildContext context, MovieRecommendation movie) {
   showModalBottomSheet(
@@ -47,6 +48,13 @@ void showMovieDetailSheet(BuildContext context, MovieRecommendation movie) {
                     'Rok ${movie.year}',
                     style: const TextStyle(color: Colors.white54, fontSize: 16),
                   ),
+                  if (movie.imdbRating != null || movie.csfdRating != null) ...[
+                    const SizedBox(height: 12),
+                    MovieRatingsRow(
+                      imdbRating: movie.imdbRating,
+                      csfdRating: movie.csfdRating,
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   const Text(
                     'Náladová paleta',

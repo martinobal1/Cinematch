@@ -86,7 +86,9 @@ Odpovedz VÝHRADNE platným JSON (bez markdown) v tomto tvare:
       "moodTags": ["tag1", "tag2", "tag3"],
       "moodColors": ["1a1a2e", "16213e", "0f3460"],
       "trailerQuery": "názov filmu rok official trailer",
-      "personalReview": "krátka recenzia šitá na mieru používateľovi"
+      "personalReview": "krátka recenzia šitá na mieru používateľovi",
+      "imdbRating": 8.8,
+      "csfdRating": 87
     }
   ]
 }
@@ -94,6 +96,8 @@ Odpovedz VÝHRADNE platným JSON (bez markdown) v tomto tvare:
 Pravidlá:
 - Presne 3 až 5 filmov v poli movies (ak používateľ chce top 10, daj 5 najlepších)
 - englishTitle: vždy oficiálny anglický názov filmu (pre plagáty)
+- imdbRating: priemerné hodnotenie z IMDb (0–10), len ak ho poznáš; inak vynechaj pole
+- csfdRating: hodnotenie z ČSFD v percentách (0–100), len ak ho poznáš; inak vynechaj pole
 - moodColors: 3 hex farby bez # (náladová paleta)
 - Odpovedaj v slovenčine (title, reason, tagy); englishTitle vždy po anglicky
 ''';
